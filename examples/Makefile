@@ -12,7 +12,7 @@ TARGETS := $(patsubst %.c,%.out,$(SOURCES))
 
 all: $(TARGETS)
 
-%.o: %.c
+%.out: %.c
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 clean:

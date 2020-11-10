@@ -21,6 +21,12 @@ int main(int argc, char* argv[]) {
    * 10 MB / 64 B (cacheline) * 100 ~ 16 M */
   int n_iter = 100;
   size_t size = 10000000;
+
+  /* # of L2 cache misses should be much less than:
+   * 0.5 MB / 64 B (cacheline) * 1000 ~ 7.8 M */
+  /* int n_iter = 1000; */
+  /* size_t size = 500000; */
+
   char* data = malloc(size);
 
   wrapperf_l2_cache_miss_start(&wp);

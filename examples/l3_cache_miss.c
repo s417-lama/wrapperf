@@ -21,6 +21,12 @@ int main(int argc, char* argv[]) {
    * 500 MB / 64 B (cacheline) * 10 iter ~ 78 M */
   int n_iter = 10;
   size_t size = 500000000;
+
+  /* # of L3 cache misses should be much less than:
+   * 10 MB / 64 B (cacheline) * 100 iter ~ 16 M */
+  /* int n_iter = 100; */
+  /* size_t size = 10000000; */
+
   char* data = malloc(size);
 
   wrapperf_l3_cache_miss_start(&wp);

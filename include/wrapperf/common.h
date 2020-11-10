@@ -68,7 +68,7 @@ static inline void _wrapperf_event_fini(wrapperf_event_t* wpe) {
 static inline void _wrapperf_event_start(wrapperf_event_t* wpe) {
   ioctl(wpe->fd, PERF_EVENT_IOC_RESET, 0);
   ioctl(wpe->fd, PERF_EVENT_IOC_ENABLE, 0);
-  wpe->value      = _wrapperf_raw_event_read(wpe->fd);
+  wpe->value = _wrapperf_raw_event_read(wpe->fd);
   if (wpe->monitoring) {
     fprintf(stderr, "Event monitoring has already been started.\n");
     exit(EXIT_FAILURE);
@@ -94,14 +94,65 @@ static inline uint64_t _wrapperf_event_get_value(wrapperf_event_t* wpe) {
   return wpe->value;
 }
 
-/* static inline int _wrapperf_raw_init(uint64_t event) { */
-/*   struct perf_event_attr pe; */
-/*   _wrapperf_raw_event_attr_init(&pe); */
-/*   pe.type   = PERF_TYPE_RAW; */
-/*   pe.config = event; */
+/*
+ * For all-core events
+ */
 
-/*   return _wrapperf_event_init(-1, &pe); */
-/* } */
+typedef struct wrapperf_allcore_event {
+  int               n_core;
+  wrapperf_event_t* events;
+  const char*       event_name;
+} wrapperf_allcore_event_t;
+
+static inline void _wrapperf_allcore_event_init(wrapperf_allcore_event_t* wpae,
+                                                int                       n_core,
+                                                void (*init_per_core_fn)(wrapperf_event_t*, int),
+                                                const char*               event_name) {
+  wpae->n_core     = n_core;
+  wpae->events     = (wrapperf_event_t*)malloc(n_core * sizeof(wrapperf_event_t));
+  wpae->event_name = event_name;
+  for (int i = 0; i < n_core; i++) {
+    init_per_core_fn(&wpae->events[i], i);
+  }
+}
+
+static inline void _wrapperf_allcore_event_fini(wrapperf_allcore_event_t* wpae) {
+  for (int i = 0; i < wpae->n_core; i++) {
+    _wrapperf_event_fini(&wpae->events[i]);
+  }
+  free(wpae->events);
+}
+
+static inline void _wrapperf_allcore_event_start(wrapperf_allcore_event_t* wpae) {
+  for (int i = 0; i < wpae->n_core; i++) {
+    _wrapperf_event_start(&wpae->events[i]);
+  }
+}
+
+static inline void _wrapperf_allcore_event_stop(wrapperf_allcore_event_t* wpae) {
+  for (int i = 0; i < wpae->n_core; i++) {
+    _wrapperf_event_stop(&wpae->events[i]);
+  }
+}
+
+static inline void _wrapperf_allcore_event_print_all(wrapperf_allcore_event_t* wpae) {
+  for (int i = 0; i < wpae->n_core; i++) {
+    uint64_t c = _wrapperf_event_get_value(&wpae->events[i]);
+    printf("Core %d   |   %s: %ld\n", i, wpae->event_name, c);
+  }
+}
+
+static inline void _wrapperf_allcore_event_print_sum(wrapperf_allcore_event_t* wpae) {
+  uint64_t c = 0;
+  for (int i = 0; i < wpae->n_core; i++) {
+    c += _wrapperf_event_get_value(&wpae->events[i]);
+  }
+  printf("%s: %ld\n", wpae->event_name, c);
+}
+
+/*
+ * Common events
+ */
 
 static inline void _wrapperf_cpu_cycle_init(wrapperf_event_t* wpe) {
   struct perf_event_attr pe;

@@ -9,18 +9,63 @@ extern "C" {
 #endif
 
 typedef struct wrapperf_skylake {
+  int               n_core;
   int               n_socket;
   int               n_cha;
-  wrapperf_event_t* l3_cache_miss_events;
+
+  wrapperf_allcore_event_t l2_cache_miss_events;
+  wrapperf_event_t*        l3_cache_miss_events;
 } wrapperf_skylake_t;
 
 static inline void _wrapperf_init(wrapperf_skylake_t* wp) {
+  wp->n_core = 56;
   wp->n_socket = 2;
   wp->n_cha = 28;
 }
 
+static inline void _wrapperf_fini(wrapperf_skylake_t* wp) {
+}
+
 /*
- * uncore_cha performance monitoring for L3 cache misses
+ * event monitoring for L2 cache misses
+ */
+
+static inline void _wrapperf_l2_cache_miss_init_per_core(wrapperf_event_t* wpe, int cpu) {
+  struct perf_event_attr pe;
+  _wrapperf_raw_event_attr_init(&pe);
+  pe.type   = PERF_TYPE_RAW;
+  pe.config = 0x3F24; // umask: 0x3F, event: 0x24
+
+  _wrapperf_event_init(wpe, &pe, -1, cpu);
+}
+
+static inline void _wrapperf_l2_cache_miss_init(wrapperf_skylake_t* wp) {
+  _wrapperf_allcore_event_init(&wp->l2_cache_miss_events, wp->n_core,
+                               _wrapperf_l2_cache_miss_init_per_core, "L2 Cache Misses");
+}
+
+static inline void _wrapperf_l2_cache_miss_fini(wrapperf_skylake_t* wp) {
+  _wrapperf_allcore_event_fini(&wp->l2_cache_miss_events);
+}
+
+static inline void _wrapperf_l2_cache_miss_start(wrapperf_skylake_t* wp) {
+  _wrapperf_allcore_event_start(&wp->l2_cache_miss_events);
+}
+
+static inline void _wrapperf_l2_cache_miss_stop(wrapperf_skylake_t* wp) {
+  _wrapperf_allcore_event_stop(&wp->l2_cache_miss_events);
+}
+
+static inline void _wrapperf_l2_cache_miss_print_all(wrapperf_skylake_t* wp) {
+  _wrapperf_allcore_event_print_all(&wp->l2_cache_miss_events);
+}
+
+static inline void _wrapperf_l2_cache_miss_print_sum(wrapperf_skylake_t* wp) {
+  _wrapperf_allcore_event_print_sum(&wp->l2_cache_miss_events);
+}
+
+/*
+ * uncore_cha event monitoring for L3 cache misses
  */
 
 static inline uint32_t _wrapperf_cha_filter_0(uint16_t tid, uint16_t state) {

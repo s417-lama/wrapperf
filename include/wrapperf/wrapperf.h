@@ -22,6 +22,7 @@ static inline void wrapperf_init(wrapperf_t* wp) {
 
 static inline void wrapperf_fini(wrapperf_t* wp) {
   _wrapperf_event_fini(&wp->cpu_cycle_event);
+  _wrapperf_fini(&wp->skylake);
 }
 
 static inline void wrapperf_cpu_cycle_start(wrapperf_t* wp) {
@@ -35,6 +36,34 @@ static inline void wrapperf_cpu_cycle_stop(wrapperf_t* wp) {
 static inline void wrapperf_cpu_cycle_print(wrapperf_t* wp) {
   uint64_t c = _wrapperf_event_get_value(&wp->cpu_cycle_event);
   printf("CPU Cycles: %ld\n", c);
+}
+
+/*
+ * L2 cache miss
+ */
+
+static inline void wrapperf_l2_cache_miss_init(wrapperf_t* wp) {
+  _wrapperf_l2_cache_miss_init(&wp->skylake);
+}
+
+static inline void wrapperf_l2_cache_miss_fini(wrapperf_t* wp) {
+  _wrapperf_l2_cache_miss_fini(&wp->skylake);
+}
+
+static inline void wrapperf_l2_cache_miss_start(wrapperf_t* wp) {
+  _wrapperf_l2_cache_miss_start(&wp->skylake);
+}
+
+static inline void wrapperf_l2_cache_miss_stop(wrapperf_t* wp) {
+  _wrapperf_l2_cache_miss_stop(&wp->skylake);
+}
+
+static inline void wrapperf_l2_cache_miss_print_all(wrapperf_t* wp) {
+  _wrapperf_l2_cache_miss_print_all(&wp->skylake);
+}
+
+static inline void wrapperf_l2_cache_miss_print_sum(wrapperf_t* wp) {
+  _wrapperf_l2_cache_miss_print_sum(&wp->skylake);
 }
 
 /*

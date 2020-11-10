@@ -35,6 +35,7 @@ static inline void _wrapperf_raw_event_attr_init(struct perf_event_attr* pe) {
   memset(pe, 0, sizeof(struct perf_event_attr));
   pe->size     = sizeof(struct perf_event_attr);
   pe->disabled = 1;
+  pe->inherit  = 1;
 }
 
 

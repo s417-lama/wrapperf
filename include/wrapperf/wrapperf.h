@@ -10,33 +10,79 @@ extern "C" {
 #endif
 
 typedef struct wrapperf {
-  wrapperf_event_t         cpu_cycle_event;
+  wrapperf_allcore_event_t cpu_cycle_events;
+  wrapperf_allcore_event_t cpu_ref_cycle_events;
   wrapperf_allcore_event_t l1d_cache_miss_events;
 
   wrapperf_skylake_t skylake;
 } wrapperf_t;
 
 static inline void wrapperf_init(wrapperf_t* wp) {
-  _wrapperf_cpu_cycle_init(&wp->cpu_cycle_event);
   _wrapperf_init(&wp->skylake);
 }
 
 static inline void wrapperf_fini(wrapperf_t* wp) {
-  _wrapperf_event_fini(&wp->cpu_cycle_event);
   _wrapperf_fini(&wp->skylake);
 }
 
+/*
+ * CPU cycle
+ */
+
+static inline void wrapperf_cpu_cycle_init(wrapperf_t* wp) {
+  int n_core = wp->skylake.n_core;
+  _wrapperf_allcore_event_init(&wp->cpu_cycle_events, n_core,
+                               _wrapperf_cpu_cycle_init, "CPU Cycle");
+}
+
+static inline void wrapperf_cpu_cycle_fini(wrapperf_t* wp) {
+  _wrapperf_allcore_event_fini(&wp->cpu_cycle_events);
+}
+
 static inline void wrapperf_cpu_cycle_start(wrapperf_t* wp) {
-  _wrapperf_event_start(&wp->cpu_cycle_event);
+  _wrapperf_allcore_event_start(&wp->cpu_cycle_events);
 }
 
 static inline void wrapperf_cpu_cycle_stop(wrapperf_t* wp) {
-  _wrapperf_event_stop(&wp->cpu_cycle_event);
+  _wrapperf_allcore_event_stop(&wp->cpu_cycle_events);
 }
 
-static inline void wrapperf_cpu_cycle_print(wrapperf_t* wp) {
-  uint64_t c = _wrapperf_event_get_value(&wp->cpu_cycle_event);
-  printf("CPU Cycles: %ld\n", c);
+static inline void wrapperf_cpu_cycle_print_all(wrapperf_t* wp) {
+  _wrapperf_allcore_event_print_all(&wp->cpu_cycle_events);
+}
+
+static inline void wrapperf_cpu_cycle_print_sum(wrapperf_t* wp) {
+  _wrapperf_allcore_event_print_sum(&wp->cpu_cycle_events);
+}
+
+/*
+ * CPU ref cycle
+ */
+
+static inline void wrapperf_cpu_ref_cycle_init(wrapperf_t* wp) {
+  int n_core = wp->skylake.n_core;
+  _wrapperf_allcore_event_init(&wp->cpu_ref_cycle_events, n_core,
+                               _wrapperf_cpu_ref_cycle_init, "CPU Reference Cycle");
+}
+
+static inline void wrapperf_cpu_ref_cycle_fini(wrapperf_t* wp) {
+  _wrapperf_allcore_event_fini(&wp->cpu_ref_cycle_events);
+}
+
+static inline void wrapperf_cpu_ref_cycle_start(wrapperf_t* wp) {
+  _wrapperf_allcore_event_start(&wp->cpu_ref_cycle_events);
+}
+
+static inline void wrapperf_cpu_ref_cycle_stop(wrapperf_t* wp) {
+  _wrapperf_allcore_event_stop(&wp->cpu_ref_cycle_events);
+}
+
+static inline void wrapperf_cpu_ref_cycle_print_all(wrapperf_t* wp) {
+  _wrapperf_allcore_event_print_all(&wp->cpu_ref_cycle_events);
+}
+
+static inline void wrapperf_cpu_ref_cycle_print_sum(wrapperf_t* wp) {
+  _wrapperf_allcore_event_print_sum(&wp->cpu_ref_cycle_events);
 }
 
 /*

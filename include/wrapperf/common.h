@@ -154,7 +154,7 @@ static inline void _wrapperf_allcore_event_print_sum(wrapperf_allcore_event_t* w
  * Common events
  */
 
-static inline void _wrapperf_cpu_cycle_init(wrapperf_event_t* wpe) {
+static inline void _wrapperf_cpu_cycle_init(wrapperf_event_t* wpe, int cpu) {
   struct perf_event_attr pe;
   _wrapperf_raw_event_attr_init(&pe);
   pe.type           = PERF_TYPE_HARDWARE;
@@ -162,7 +162,18 @@ static inline void _wrapperf_cpu_cycle_init(wrapperf_event_t* wpe) {
   pe.exclude_kernel = 1;
   pe.exclude_hv     = 1;
 
-  _wrapperf_event_init(wpe, &pe, 0, -1);
+  _wrapperf_event_init(wpe, &pe, 0, cpu);
+}
+
+static inline void _wrapperf_cpu_ref_cycle_init(wrapperf_event_t* wpe, int cpu) {
+  struct perf_event_attr pe;
+  _wrapperf_raw_event_attr_init(&pe);
+  pe.type           = PERF_TYPE_HARDWARE;
+  pe.config         = PERF_COUNT_HW_REF_CPU_CYCLES;
+  pe.exclude_kernel = 1;
+  pe.exclude_hv     = 1;
+
+  _wrapperf_event_init(wpe, &pe, 0, cpu);
 }
 
 static inline void _wrapperf_l1d_cache_miss_init(wrapperf_event_t* wpe, int cpu) {

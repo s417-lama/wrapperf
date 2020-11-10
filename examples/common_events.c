@@ -8,6 +8,7 @@
 int main(int argc, char* argv[]) {
   wrapperf_t wp;
   wrapperf_init(&wp);
+  wrapperf_cpu_cycle_init(&wp);
 
   wrapperf_cpu_cycle_start(&wp);
 
@@ -15,8 +16,13 @@ int main(int argc, char* argv[]) {
 
   wrapperf_cpu_cycle_stop(&wp);
 
-  wrapperf_cpu_cycle_print(&wp);
+  printf("========== All ==========\n");
+  wrapperf_cpu_cycle_print_all(&wp);
 
+  printf("========== Sum ==========\n");
+  wrapperf_cpu_cycle_print_sum(&wp);
+
+  wrapperf_cpu_cycle_fini(&wp);
   wrapperf_fini(&wp);
 
   return 0;

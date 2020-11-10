@@ -66,6 +66,14 @@ static inline void _wrapperf_l2_cache_miss_print_sum(wrapperf_skylake_t* wp) {
   _wrapperf_allcore_event_print_sum(&wp->l2_cache_miss_events);
 }
 
+static inline uint64_t _wrapperf_l2_cache_miss_get_ith(wrapperf_skylake_t* wp, int i) {
+  return _wrapperf_allcore_event_get_ith(&wp->l2_cache_miss_events, i);
+}
+
+static inline uint64_t _wrapperf_l2_cache_miss_get_sum(wrapperf_skylake_t* wp) {
+  return _wrapperf_allcore_event_get_sum(&wp->l2_cache_miss_events);
+}
+
 /*
  * uncore_cha event monitoring for L3 cache misses
  */
@@ -157,7 +165,7 @@ static inline void _wrapperf_uncore_cha_print_per_socket(wrapperf_skylake_t* wp)
   }
 }
 
-static inline void _wrapperf_uncore_cha_print_sum(wrapperf_skylake_t* wp) {
+static inline uint64_t _wrapperf_uncore_cha_get_sum(wrapperf_skylake_t* wp) {
   uint64_t c = 0;
   for (int s = 0; s < wp->n_socket; s++) {
     for (int i = 0; i < wp->n_cha; i++) {
@@ -165,6 +173,11 @@ static inline void _wrapperf_uncore_cha_print_sum(wrapperf_skylake_t* wp) {
       c += _wrapperf_event_get_value(wpe);
     }
   }
+  return c;
+}
+
+static inline void _wrapperf_uncore_cha_print_sum(wrapperf_skylake_t* wp) {
+  uint64_t c = _wrapperf_uncore_cha_get_sum(wp);
   printf("L3 Cache Misses: %ld\n", c);
 }
 

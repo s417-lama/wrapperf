@@ -47,6 +47,14 @@ static inline void wrapperf_cpu_cycle_stop(wrapperf_t* wp) {
   _wrapperf_allcore_event_stop(&wp->cpu_cycle_events);
 }
 
+static inline uint64_t wrapperf_cpu_cycle_get_ith(wrapperf_t* wp, int i) {
+  return _wrapperf_allcore_event_get_ith(&wp->cpu_cycle_events, i);
+}
+
+static inline uint64_t wrapperf_cpu_cycle_get_sum(wrapperf_t* wp) {
+  return _wrapperf_allcore_event_get_sum(&wp->cpu_cycle_events);
+}
+
 static inline void wrapperf_cpu_cycle_print_all(wrapperf_t* wp) {
   _wrapperf_allcore_event_print_all(&wp->cpu_cycle_events);
 }
@@ -75,6 +83,14 @@ static inline void wrapperf_cpu_ref_cycle_start(wrapperf_t* wp) {
 
 static inline void wrapperf_cpu_ref_cycle_stop(wrapperf_t* wp) {
   _wrapperf_allcore_event_stop(&wp->cpu_ref_cycle_events);
+}
+
+static inline uint64_t wrapperf_cpu_ref_cycle_get_ith(wrapperf_t* wp, int i) {
+  return _wrapperf_allcore_event_get_ith(&wp->cpu_ref_cycle_events, i);
+}
+
+static inline uint64_t wrapperf_cpu_ref_cycle_get_sum(wrapperf_t* wp) {
+  return _wrapperf_allcore_event_get_sum(&wp->cpu_ref_cycle_events);
 }
 
 static inline void wrapperf_cpu_ref_cycle_print_all(wrapperf_t* wp) {
@@ -107,6 +123,14 @@ static inline void wrapperf_l1d_cache_miss_stop(wrapperf_t* wp) {
   _wrapperf_allcore_event_stop(&wp->l1d_cache_miss_events);
 }
 
+static inline uint64_t wrapperf_l1d_cache_miss_get_ith(wrapperf_t* wp, int i) {
+  return _wrapperf_allcore_event_get_ith(&wp->l1d_cache_miss_events, i);
+}
+
+static inline uint64_t wrapperf_l1d_cache_miss_get_sum(wrapperf_t* wp) {
+  return _wrapperf_allcore_event_get_sum(&wp->l1d_cache_miss_events);
+}
+
 static inline void wrapperf_l1d_cache_miss_print_all(wrapperf_t* wp) {
   _wrapperf_allcore_event_print_all(&wp->l1d_cache_miss_events);
 }
@@ -133,6 +157,14 @@ static inline void wrapperf_l2_cache_miss_start(wrapperf_t* wp) {
 
 static inline void wrapperf_l2_cache_miss_stop(wrapperf_t* wp) {
   _wrapperf_l2_cache_miss_stop(&wp->skylake);
+}
+
+static inline uint64_t wrapperf_l2_cache_miss_get_ith(wrapperf_t* wp, int i) {
+  return _wrapperf_l2_cache_miss_get_ith(&wp->skylake, i);
+}
+
+static inline uint64_t wrapperf_l2_cache_miss_get_sum(wrapperf_t* wp) {
+  return _wrapperf_l2_cache_miss_get_sum(&wp->skylake);
 }
 
 static inline void wrapperf_l2_cache_miss_print_all(wrapperf_t* wp) {
@@ -169,6 +201,10 @@ static inline void wrapperf_l3_cache_miss_print_all(wrapperf_t* wp) {
 
 static inline void wrapperf_l3_cache_miss_print_per_socket(wrapperf_t* wp) {
   _wrapperf_uncore_cha_print_per_socket(&wp->skylake);
+}
+
+static inline uint64_t wrapperf_l3_cache_miss_get_sum(wrapperf_t* wp) {
+  return _wrapperf_uncore_cha_get_sum(&wp->skylake);
 }
 
 static inline void wrapperf_l3_cache_miss_print_sum(wrapperf_t* wp) {

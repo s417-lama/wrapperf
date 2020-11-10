@@ -10,7 +10,8 @@ extern "C" {
 #endif
 
 typedef struct wrapperf {
-  wrapperf_event_t cpu_cycle_event;
+  wrapperf_event_t         cpu_cycle_event;
+  wrapperf_allcore_event_t l1d_cache_miss_events;
 
   wrapperf_skylake_t skylake;
 } wrapperf_t;
@@ -36,6 +37,36 @@ static inline void wrapperf_cpu_cycle_stop(wrapperf_t* wp) {
 static inline void wrapperf_cpu_cycle_print(wrapperf_t* wp) {
   uint64_t c = _wrapperf_event_get_value(&wp->cpu_cycle_event);
   printf("CPU Cycles: %ld\n", c);
+}
+
+/*
+ * L1 data cache miss
+ */
+
+static inline void wrapperf_l1d_cache_miss_init(wrapperf_t* wp) {
+  int n_core = wp->skylake.n_core;
+  _wrapperf_allcore_event_init(&wp->l1d_cache_miss_events, n_core,
+                               _wrapperf_l1d_cache_miss_init, "L1 Data Cache Miss");
+}
+
+static inline void wrapperf_l1d_cache_miss_fini(wrapperf_t* wp) {
+  _wrapperf_allcore_event_fini(&wp->l1d_cache_miss_events);
+}
+
+static inline void wrapperf_l1d_cache_miss_start(wrapperf_t* wp) {
+  _wrapperf_allcore_event_start(&wp->l1d_cache_miss_events);
+}
+
+static inline void wrapperf_l1d_cache_miss_stop(wrapperf_t* wp) {
+  _wrapperf_allcore_event_stop(&wp->l1d_cache_miss_events);
+}
+
+static inline void wrapperf_l1d_cache_miss_print_all(wrapperf_t* wp) {
+  _wrapperf_allcore_event_print_all(&wp->l1d_cache_miss_events);
+}
+
+static inline void wrapperf_l1d_cache_miss_print_sum(wrapperf_t* wp) {
+  _wrapperf_allcore_event_print_sum(&wp->l1d_cache_miss_events);
 }
 
 /*

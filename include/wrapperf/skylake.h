@@ -33,10 +33,12 @@ static inline void _wrapperf_fini(wrapperf_skylake_t* wp) {
 static inline void _wrapperf_l2_cache_miss_init_per_core(wrapperf_event_t* wpe, int cpu) {
   struct perf_event_attr pe;
   _wrapperf_raw_event_attr_init(&pe);
-  pe.type   = PERF_TYPE_RAW;
-  pe.config = 0x3F24; // umask: 0x3F, event: 0x24
+  pe.type           = PERF_TYPE_RAW;
+  pe.config         = 0x3F24; // umask: 0x3F, event: 0x24
+  pe.exclude_kernel = 1;
+  pe.exclude_hv     = 1;
 
-  _wrapperf_event_init(wpe, &pe, -1, cpu);
+  _wrapperf_event_init(wpe, &pe, 0, cpu);
 }
 
 static inline void _wrapperf_l2_cache_miss_init(wrapperf_skylake_t* wp) {

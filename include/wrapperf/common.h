@@ -165,6 +165,17 @@ static inline void _wrapperf_cpu_cycle_init(wrapperf_event_t* wpe) {
   _wrapperf_event_init(wpe, &pe, 0, -1);
 }
 
+static inline void _wrapperf_l1d_cache_miss_init(wrapperf_event_t* wpe, int cpu) {
+  struct perf_event_attr pe;
+  _wrapperf_raw_event_attr_init(&pe);
+  pe.type           = PERF_TYPE_HW_CACHE;
+  pe.config         = PERF_COUNT_HW_CACHE_L1D | (PERF_COUNT_HW_CACHE_RESULT_MISS << 16);
+  pe.exclude_kernel = 1;
+  pe.exclude_hv     = 1;
+
+  _wrapperf_event_init(wpe, &pe, 0, cpu);
+}
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

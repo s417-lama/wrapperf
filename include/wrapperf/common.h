@@ -12,6 +12,14 @@
 #include <linux/perf_event.h>
 #include <asm/unistd.h>
 
+#define WRAPPERF_ARCH_NONE      1
+#define WRAPPERF_ARCH_SKYLAKE   2
+#define WRAPPERF_ARCH_BROADWELL 3
+
+#ifndef WRAPPERF_ARCH
+#error "Please specify WRAPPERF_ARCH"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

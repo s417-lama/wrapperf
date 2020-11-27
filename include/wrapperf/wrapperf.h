@@ -3,7 +3,12 @@
 #define WRAPPERF_WRAPPERF_H_
 
 #include "wrapperf/common.h"
+
+#if WRAPPERF_ARCH == WRAPPERF_ARCH_SKYLAKE
 #include "wrapperf/skylake.h"
+#elif WRAPPERF_ARCH == WRAPPERF_ARCH_BROADWELL
+#include "wrapperf/broadwell.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,15 +19,15 @@ typedef struct wrapperf {
   wrapperf_allcore_event_t cpu_ref_cycle_events;
   wrapperf_allcore_event_t l1d_cache_miss_events;
 
-  wrapperf_skylake_t skylake;
+  wrapperf_arch_t arch_wp;
 } wrapperf_t;
 
 static inline void wrapperf_init(wrapperf_t* wp) {
-  _wrapperf_init(&wp->skylake);
+  _wrapperf_init(&wp->arch_wp);
 }
 
 static inline void wrapperf_fini(wrapperf_t* wp) {
-  _wrapperf_fini(&wp->skylake);
+  _wrapperf_fini(&wp->arch_wp);
 }
 
 /*
@@ -30,7 +35,7 @@ static inline void wrapperf_fini(wrapperf_t* wp) {
  */
 
 static inline void wrapperf_cpu_cycle_init(wrapperf_t* wp) {
-  int n_core = wp->skylake.n_core;
+  int n_core = wp->arch_wp.n_core;
   _wrapperf_allcore_event_init(&wp->cpu_cycle_events, n_core,
                                _wrapperf_cpu_cycle_init, "CPU Cycle");
 }
@@ -68,7 +73,7 @@ static inline void wrapperf_cpu_cycle_print_sum(wrapperf_t* wp) {
  */
 
 static inline void wrapperf_cpu_ref_cycle_init(wrapperf_t* wp) {
-  int n_core = wp->skylake.n_core;
+  int n_core = wp->arch_wp.n_core;
   _wrapperf_allcore_event_init(&wp->cpu_ref_cycle_events, n_core,
                                _wrapperf_cpu_ref_cycle_init, "CPU Reference Cycle");
 }
@@ -106,7 +111,7 @@ static inline void wrapperf_cpu_ref_cycle_print_sum(wrapperf_t* wp) {
  */
 
 static inline void wrapperf_l1d_cache_miss_init(wrapperf_t* wp) {
-  int n_core = wp->skylake.n_core;
+  int n_core = wp->arch_wp.n_core;
   _wrapperf_allcore_event_init(&wp->l1d_cache_miss_events, n_core,
                                _wrapperf_l1d_cache_miss_init, "L1 Data Cache Miss");
 }
@@ -144,35 +149,35 @@ static inline void wrapperf_l1d_cache_miss_print_sum(wrapperf_t* wp) {
  */
 
 static inline void wrapperf_l2_cache_miss_init(wrapperf_t* wp) {
-  _wrapperf_l2_cache_miss_init(&wp->skylake);
+  _wrapperf_l2_cache_miss_init(&wp->arch_wp);
 }
 
 static inline void wrapperf_l2_cache_miss_fini(wrapperf_t* wp) {
-  _wrapperf_l2_cache_miss_fini(&wp->skylake);
+  _wrapperf_l2_cache_miss_fini(&wp->arch_wp);
 }
 
 static inline void wrapperf_l2_cache_miss_start(wrapperf_t* wp) {
-  _wrapperf_l2_cache_miss_start(&wp->skylake);
+  _wrapperf_l2_cache_miss_start(&wp->arch_wp);
 }
 
 static inline void wrapperf_l2_cache_miss_stop(wrapperf_t* wp) {
-  _wrapperf_l2_cache_miss_stop(&wp->skylake);
+  _wrapperf_l2_cache_miss_stop(&wp->arch_wp);
 }
 
 static inline uint64_t wrapperf_l2_cache_miss_get_ith(wrapperf_t* wp, int i) {
-  return _wrapperf_l2_cache_miss_get_ith(&wp->skylake, i);
+  return _wrapperf_l2_cache_miss_get_ith(&wp->arch_wp, i);
 }
 
 static inline uint64_t wrapperf_l2_cache_miss_get_sum(wrapperf_t* wp) {
-  return _wrapperf_l2_cache_miss_get_sum(&wp->skylake);
+  return _wrapperf_l2_cache_miss_get_sum(&wp->arch_wp);
 }
 
 static inline void wrapperf_l2_cache_miss_print_all(wrapperf_t* wp) {
-  _wrapperf_l2_cache_miss_print_all(&wp->skylake);
+  _wrapperf_l2_cache_miss_print_all(&wp->arch_wp);
 }
 
 static inline void wrapperf_l2_cache_miss_print_sum(wrapperf_t* wp) {
-  _wrapperf_l2_cache_miss_print_sum(&wp->skylake);
+  _wrapperf_l2_cache_miss_print_sum(&wp->arch_wp);
 }
 
 /*
@@ -180,35 +185,35 @@ static inline void wrapperf_l2_cache_miss_print_sum(wrapperf_t* wp) {
  */
 
 static inline void wrapperf_l3_cache_miss_init(wrapperf_t* wp) {
-  _wrapperf_uncore_cha_init(&wp->skylake);
+  _wrapperf_l3_cache_miss_init(&wp->arch_wp);
 }
 
 static inline void wrapperf_l3_cache_miss_fini(wrapperf_t* wp) {
-  _wrapperf_uncore_cha_fini(&wp->skylake);
+  _wrapperf_l3_cache_miss_fini(&wp->arch_wp);
 }
 
 static inline void wrapperf_l3_cache_miss_start(wrapperf_t* wp) {
-  _wrapperf_uncore_cha_start(&wp->skylake);
+  _wrapperf_l3_cache_miss_start(&wp->arch_wp);
 }
 
 static inline void wrapperf_l3_cache_miss_stop(wrapperf_t* wp) {
-  _wrapperf_uncore_cha_stop(&wp->skylake);
+  _wrapperf_l3_cache_miss_stop(&wp->arch_wp);
 }
 
 static inline void wrapperf_l3_cache_miss_print_all(wrapperf_t* wp) {
-  _wrapperf_uncore_cha_print_all(&wp->skylake);
+  _wrapperf_l3_cache_miss_print_all(&wp->arch_wp);
 }
 
 static inline void wrapperf_l3_cache_miss_print_per_socket(wrapperf_t* wp) {
-  _wrapperf_uncore_cha_print_per_socket(&wp->skylake);
+  _wrapperf_l3_cache_miss_print_per_socket(&wp->arch_wp);
 }
 
 static inline uint64_t wrapperf_l3_cache_miss_get_sum(wrapperf_t* wp) {
-  return _wrapperf_uncore_cha_get_sum(&wp->skylake);
+  return _wrapperf_l3_cache_miss_get_sum(&wp->arch_wp);
 }
 
 static inline void wrapperf_l3_cache_miss_print_sum(wrapperf_t* wp) {
-  _wrapperf_uncore_cha_print_sum(&wp->skylake);
+  _wrapperf_l3_cache_miss_print_sum(&wp->arch_wp);
 }
 
 #ifdef __cplusplus

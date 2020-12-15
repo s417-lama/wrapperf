@@ -65,6 +65,10 @@ static inline void _wrapperf_event_init(wrapperf_event_t*       wpe,
     perror("perf_event_open");
     exit(EXIT_FAILURE);
   }
+
+  ioctl(wpe->fd, PERF_EVENT_IOC_RESET, 0);
+  ioctl(wpe->fd, PERF_EVENT_IOC_ENABLE, 0);
+
   wpe->value      = 0;
   wpe->monitoring = 0;
 }
@@ -75,8 +79,6 @@ static inline void _wrapperf_event_fini(wrapperf_event_t* wpe) {
 }
 
 static inline void _wrapperf_event_start(wrapperf_event_t* wpe) {
-  ioctl(wpe->fd, PERF_EVENT_IOC_RESET, 0);
-  ioctl(wpe->fd, PERF_EVENT_IOC_ENABLE, 0);
   wpe->value = _wrapperf_raw_event_read(wpe->fd);
   if (wpe->monitoring) {
     fprintf(stderr, "Event monitoring has already been started.\n");
@@ -87,7 +89,6 @@ static inline void _wrapperf_event_start(wrapperf_event_t* wpe) {
 
 static inline void _wrapperf_event_stop(wrapperf_event_t* wpe) {
   wpe->value = _wrapperf_raw_event_read(wpe->fd) - wpe->value;
-  ioctl(wpe->fd, PERF_EVENT_IOC_DISABLE, 0);
   if (!wpe->monitoring) {
     fprintf(stderr, "Event monitoring is not started but stop is called.\n");
     exit(EXIT_FAILURE);

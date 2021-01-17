@@ -20,6 +20,10 @@
 #error "Please specify WRAPPERF_ARCH"
 #endif
 
+#ifndef WRAPPERF_ONE_EVENT_FOR_ALL_CORES
+# define WRAPPERF_ONE_EVENT_FOR_ALL_CORES 0
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -118,54 +122,88 @@ static inline void _wrapperf_allcore_event_init(wrapperf_allcore_event_t* wpae,
                                                 int                       n_core,
                                                 void (*init_per_core_fn)(wrapperf_event_t*, int),
                                                 const char*               event_name) {
+#if WRAPPERF_ONE_EVENT_FOR_ALL_CORES
+  wpae->n_core     = n_core;
+  wpae->events     = (wrapperf_event_t*)malloc(sizeof(wrapperf_event_t));
+  wpae->event_name = event_name;
+  init_per_core_fn(&wpae->events[0], -1);
+#else
   wpae->n_core     = n_core;
   wpae->events     = (wrapperf_event_t*)malloc(n_core * sizeof(wrapperf_event_t));
   wpae->event_name = event_name;
   for (int i = 0; i < n_core; i++) {
     init_per_core_fn(&wpae->events[i], i);
   }
+#endif
 }
 
 static inline void _wrapperf_allcore_event_fini(wrapperf_allcore_event_t* wpae) {
+#if WRAPPERF_ONE_EVENT_FOR_ALL_CORES
+  _wrapperf_event_fini(&wpae->events[0]);
+  free(wpae->events);
+#else
   for (int i = 0; i < wpae->n_core; i++) {
     _wrapperf_event_fini(&wpae->events[i]);
   }
   free(wpae->events);
+#endif
 }
 
 static inline void _wrapperf_allcore_event_start(wrapperf_allcore_event_t* wpae) {
+#if WRAPPERF_ONE_EVENT_FOR_ALL_CORES
+  _wrapperf_event_start(&wpae->events[0]);
+#else
   for (int i = 0; i < wpae->n_core; i++) {
     _wrapperf_event_start(&wpae->events[i]);
   }
+#endif
 }
 
 static inline void _wrapperf_allcore_event_stop(wrapperf_allcore_event_t* wpae) {
+#if WRAPPERF_ONE_EVENT_FOR_ALL_CORES
+  _wrapperf_event_stop(&wpae->events[0]);
+#else
   for (int i = 0; i < wpae->n_core; i++) {
     _wrapperf_event_stop(&wpae->events[i]);
   }
+#endif
 }
 
 static inline uint64_t _wrapperf_allcore_event_get_ith(wrapperf_allcore_event_t* wpae, int i) {
+#if WRAPPERF_ONE_EVENT_FOR_ALL_CORES
+  fprintf(stderr, "Function '%s' cannot be called with WRAPPERF_ONE_EVENT_FOR_ALL_CORES=1.\n", __func__);
+  exit(EXIT_FAILURE);
+#else
   if (i < 0 || wpae->n_core <= i) {
     fprintf(stderr, "Index %d is out of range (n_core = %d)\n", i, wpae->n_core);
     exit(EXIT_FAILURE);
   }
   return _wrapperf_event_get_value(&wpae->events[i]);
+#endif
 }
 
 static inline uint64_t _wrapperf_allcore_event_get_sum(wrapperf_allcore_event_t* wpae) {
+#if WRAPPERF_ONE_EVENT_FOR_ALL_CORES
+  return _wrapperf_event_get_value(&wpae->events[0]);
+#else
   uint64_t c = 0;
   for (int i = 0; i < wpae->n_core; i++) {
     c += _wrapperf_event_get_value(&wpae->events[i]);
   }
   return c;
+#endif
 }
 
 static inline void _wrapperf_allcore_event_print_all(wrapperf_allcore_event_t* wpae) {
+#if WRAPPERF_ONE_EVENT_FOR_ALL_CORES
+  fprintf(stderr, "Function '%s' cannot be called with WRAPPERF_ONE_EVENT_FOR_ALL_CORES=1.\n", __func__);
+  exit(EXIT_FAILURE);
+#else
   for (int i = 0; i < wpae->n_core; i++) {
     uint64_t c = _wrapperf_event_get_value(&wpae->events[i]);
     printf("Core %d   |   %s: %ld\n", i, wpae->event_name, c);
   }
+#endif
 }
 
 static inline void _wrapperf_allcore_event_print_sum(wrapperf_allcore_event_t* wpae) {

@@ -216,6 +216,110 @@ static inline void wrapperf_l3_cache_miss_print_sum(wrapperf_t* wp) {
   _wrapperf_l3_cache_miss_print_sum(&wp->arch_wp);
 }
 
+/*
+ * L1D stall cycle
+ */
+
+static inline void wrapperf_l1d_stall_cycle_init(wrapperf_t* wp) {
+  _wrapperf_l1d_stall_cycle_init(&wp->arch_wp);
+}
+
+static inline void wrapperf_l1d_stall_cycle_fini(wrapperf_t* wp) {
+  _wrapperf_l1d_stall_cycle_fini(&wp->arch_wp);
+}
+
+static inline void wrapperf_l1d_stall_cycle_start(wrapperf_t* wp) {
+  _wrapperf_l1d_stall_cycle_start(&wp->arch_wp);
+}
+
+static inline void wrapperf_l1d_stall_cycle_stop(wrapperf_t* wp) {
+  _wrapperf_l1d_stall_cycle_stop(&wp->arch_wp);
+}
+
+static inline uint64_t wrapperf_l1d_stall_cycle_get_ith(wrapperf_t* wp, int i) {
+  return _wrapperf_l1d_stall_cycle_get_ith(&wp->arch_wp, i);
+}
+
+static inline uint64_t wrapperf_l1d_stall_cycle_get_sum(wrapperf_t* wp) {
+  return _wrapperf_l1d_stall_cycle_get_sum(&wp->arch_wp);
+}
+
+static inline void wrapperf_l1d_stall_cycle_print_all(wrapperf_t* wp) {
+  _wrapperf_l1d_stall_cycle_print_all(&wp->arch_wp);
+}
+
+static inline void wrapperf_l1d_stall_cycle_print_sum(wrapperf_t* wp) {
+  _wrapperf_l1d_stall_cycle_print_sum(&wp->arch_wp);
+}
+
+/*
+ * L2 stall cycle
+ */
+
+static inline void wrapperf_l2_stall_cycle_init(wrapperf_t* wp) {
+  _wrapperf_l2_stall_cycle_init(&wp->arch_wp);
+}
+
+static inline void wrapperf_l2_stall_cycle_fini(wrapperf_t* wp) {
+  _wrapperf_l2_stall_cycle_fini(&wp->arch_wp);
+}
+
+static inline void wrapperf_l2_stall_cycle_start(wrapperf_t* wp) {
+  _wrapperf_l2_stall_cycle_start(&wp->arch_wp);
+}
+
+static inline void wrapperf_l2_stall_cycle_stop(wrapperf_t* wp) {
+  _wrapperf_l2_stall_cycle_stop(&wp->arch_wp);
+}
+
+static inline uint64_t wrapperf_l2_stall_cycle_get_ith(wrapperf_t* wp, int i) {
+  return _wrapperf_l2_stall_cycle_get_ith(&wp->arch_wp, i);
+}
+
+static inline uint64_t wrapperf_l2_stall_cycle_get_sum(wrapperf_t* wp) {
+  return _wrapperf_l2_stall_cycle_get_sum(&wp->arch_wp);
+}
+
+static inline void wrapperf_l2_stall_cycle_print_all(wrapperf_t* wp) {
+  _wrapperf_l2_stall_cycle_print_all(&wp->arch_wp);
+}
+
+static inline void wrapperf_l2_stall_cycle_print_sum(wrapperf_t* wp) {
+  _wrapperf_l2_stall_cycle_print_sum(&wp->arch_wp);
+}
+
+/*
+ * L3 stall cycle
+ */
+
+static inline void wrapperf_l3_stall_cycle_init(wrapperf_t* wp) {
+  _wrapperf_l3_stall_cycle_init(&wp->arch_wp);
+}
+
+static inline void wrapperf_l3_stall_cycle_fini(wrapperf_t* wp) {
+  _wrapperf_l3_stall_cycle_fini(&wp->arch_wp);
+}
+
+static inline void wrapperf_l3_stall_cycle_start(wrapperf_t* wp) {
+  _wrapperf_l3_stall_cycle_start(&wp->arch_wp);
+}
+
+static inline void wrapperf_l3_stall_cycle_stop(wrapperf_t* wp) {
+  _wrapperf_l3_stall_cycle_stop(&wp->arch_wp);
+}
+
+static inline void wrapperf_l3_stall_cycle_print_all(wrapperf_t* wp) {
+  _wrapperf_l3_stall_cycle_print_all(&wp->arch_wp);
+}
+
+static inline uint64_t wrapperf_l3_stall_cycle_get_sum(wrapperf_t* wp) {
+  return _wrapperf_l3_stall_cycle_get_sum(&wp->arch_wp);
+}
+
+static inline void wrapperf_l3_stall_cycle_print_sum(wrapperf_t* wp) {
+  _wrapperf_l3_stall_cycle_print_sum(&wp->arch_wp);
+}
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

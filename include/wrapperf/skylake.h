@@ -15,6 +15,10 @@ typedef struct wrapperf_arch {
 
   wrapperf_allcore_event_t l2_cache_miss_events;
   wrapperf_event_t*        l3_cache_miss_events;
+
+  wrapperf_allcore_event_t l1d_stall_cycle_events;
+  wrapperf_allcore_event_t l2_stall_cycle_events;
+  wrapperf_allcore_event_t l3_stall_cycle_events;
 } wrapperf_arch_t;
 
 static inline void _wrapperf_init(wrapperf_arch_t* wp) {
@@ -179,6 +183,150 @@ static inline uint64_t _wrapperf_l3_cache_miss_get_sum(wrapperf_arch_t* wp) {
 static inline void _wrapperf_l3_cache_miss_print_sum(wrapperf_arch_t* wp) {
   uint64_t c = _wrapperf_l3_cache_miss_get_sum(wp);
   printf("L3 Cache Misses: %ld\n", c);
+}
+
+/*
+ * event monitoring for L1D stall cycle
+ */
+
+static inline void _wrapperf_l1d_stall_cycle_init_per_core(wrapperf_event_t* wpe, int cpu) {
+  struct perf_event_attr pe;
+  _wrapperf_raw_event_attr_init(&pe);
+  pe.type           = PERF_TYPE_RAW;
+  pe.config         = 0xc000ca3; // cycle_activity.stalls_l1d_miss
+  pe.exclude_kernel = 1;
+  pe.exclude_hv     = 1;
+
+  _wrapperf_event_init(wpe, &pe, 0, cpu);
+}
+
+static inline void _wrapperf_l1d_stall_cycle_init(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_init(&wp->l1d_stall_cycle_events, wp->n_core,
+                               _wrapperf_l1d_stall_cycle_init_per_core, "L1D Stall Cycle");
+}
+
+static inline void _wrapperf_l1d_stall_cycle_fini(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_fini(&wp->l1d_stall_cycle_events);
+}
+
+static inline void _wrapperf_l1d_stall_cycle_start(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_start(&wp->l1d_stall_cycle_events);
+}
+
+static inline void _wrapperf_l1d_stall_cycle_stop(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_stop(&wp->l1d_stall_cycle_events);
+}
+
+static inline void _wrapperf_l1d_stall_cycle_print_all(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_print_all(&wp->l1d_stall_cycle_events);
+}
+
+static inline void _wrapperf_l1d_stall_cycle_print_sum(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_print_sum(&wp->l1d_stall_cycle_events);
+}
+
+static inline uint64_t _wrapperf_l1d_stall_cycle_get_ith(wrapperf_arch_t* wp, int i) {
+  return _wrapperf_allcore_event_get_ith(&wp->l1d_stall_cycle_events, i);
+}
+
+static inline uint64_t _wrapperf_l1d_stall_cycle_get_sum(wrapperf_arch_t* wp) {
+  return _wrapperf_allcore_event_get_sum(&wp->l1d_stall_cycle_events);
+}
+
+/*
+ * event monitoring for L2 stall cycle
+ */
+
+static inline void _wrapperf_l2_stall_cycle_init_per_core(wrapperf_event_t* wpe, int cpu) {
+  struct perf_event_attr pe;
+  _wrapperf_raw_event_attr_init(&pe);
+  pe.type           = PERF_TYPE_RAW;
+  pe.config         = 0x50005a3; // cycle_activity.stalls_l2_miss
+  pe.exclude_kernel = 1;
+  pe.exclude_hv     = 1;
+
+  _wrapperf_event_init(wpe, &pe, 0, cpu);
+}
+
+static inline void _wrapperf_l2_stall_cycle_init(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_init(&wp->l2_stall_cycle_events, wp->n_core,
+                               _wrapperf_l2_stall_cycle_init_per_core, "L2 Stall Cycle");
+}
+
+static inline void _wrapperf_l2_stall_cycle_fini(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_fini(&wp->l2_stall_cycle_events);
+}
+
+static inline void _wrapperf_l2_stall_cycle_start(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_start(&wp->l2_stall_cycle_events);
+}
+
+static inline void _wrapperf_l2_stall_cycle_stop(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_stop(&wp->l2_stall_cycle_events);
+}
+
+static inline void _wrapperf_l2_stall_cycle_print_all(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_print_all(&wp->l2_stall_cycle_events);
+}
+
+static inline void _wrapperf_l2_stall_cycle_print_sum(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_print_sum(&wp->l2_stall_cycle_events);
+}
+
+static inline uint64_t _wrapperf_l2_stall_cycle_get_ith(wrapperf_arch_t* wp, int i) {
+  return _wrapperf_allcore_event_get_ith(&wp->l2_stall_cycle_events, i);
+}
+
+static inline uint64_t _wrapperf_l2_stall_cycle_get_sum(wrapperf_arch_t* wp) {
+  return _wrapperf_allcore_event_get_sum(&wp->l2_stall_cycle_events);
+}
+
+/*
+ * event monitoring for L3 stall cycle
+ */
+
+static inline void _wrapperf_l3_stall_cycle_init_per_core(wrapperf_event_t* wpe, int cpu) {
+  struct perf_event_attr pe;
+  _wrapperf_raw_event_attr_init(&pe);
+  pe.type           = PERF_TYPE_RAW;
+  pe.config         = 0x60006a3; // cycle_activity.stalls_l3_miss
+  pe.exclude_kernel = 1;
+  pe.exclude_hv     = 1;
+
+  _wrapperf_event_init(wpe, &pe, 0, cpu);
+}
+
+static inline void _wrapperf_l3_stall_cycle_init(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_init(&wp->l3_stall_cycle_events, wp->n_core,
+                               _wrapperf_l3_stall_cycle_init_per_core, "L3 Stall Cycle");
+}
+
+static inline void _wrapperf_l3_stall_cycle_fini(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_fini(&wp->l3_stall_cycle_events);
+}
+
+static inline void _wrapperf_l3_stall_cycle_start(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_start(&wp->l3_stall_cycle_events);
+}
+
+static inline void _wrapperf_l3_stall_cycle_stop(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_stop(&wp->l3_stall_cycle_events);
+}
+
+static inline void _wrapperf_l3_stall_cycle_print_all(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_print_all(&wp->l3_stall_cycle_events);
+}
+
+static inline void _wrapperf_l3_stall_cycle_print_sum(wrapperf_arch_t* wp) {
+  _wrapperf_allcore_event_print_sum(&wp->l3_stall_cycle_events);
+}
+
+static inline uint64_t _wrapperf_l3_stall_cycle_get_ith(wrapperf_arch_t* wp, int i) {
+  return _wrapperf_allcore_event_get_ith(&wp->l3_stall_cycle_events, i);
+}
+
+static inline uint64_t _wrapperf_l3_stall_cycle_get_sum(wrapperf_arch_t* wp) {
+  return _wrapperf_allcore_event_get_sum(&wp->l3_stall_cycle_events);
 }
 
 #ifdef __cplusplus
